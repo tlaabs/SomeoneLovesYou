@@ -7,6 +7,9 @@
 		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+	
+	<context:annotation-config />
+	
 	<!-- 스프링 프레임워크 설정용, 웹 자원과 관련되지 않은 모든 자원의 설정 -->
 	<!-- Root Context: defines shared resources visible to all other web components -->
 
@@ -26,4 +29,11 @@
 		<!-- MyBatis 설정 파일 -->
 		<property name="configLocation" value="classpath:/mybatis-config.xml"></property>
 	</bean>
+	
+	<!-- ref : https://m.blog.naver.com/sksk3479/221178451242 -->
+	<bean id="userDetailsService"
+		class="com.slu.security.service.JwtUserDetailsService">
+		<qualifier value="jwtUserDetailsService" />
+	</bean>
+	
 </beans>
