@@ -3,24 +3,32 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
 	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.1.xsd
 		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
-	
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.8.xsd">
+
 	<context:annotation-config />
-	
+
 	<!-- 스프링 프레임워크 설정용, 웹 자원과 관련되지 않은 모든 자원의 설정 -->
 	<!-- Root Context: defines shared resources visible to all other web components -->
 
 	<!-- 스프링설정으로 JDBC 연결 처리 -->
+	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property> 
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/slu?useSSL=false&amp;serverTimezone=UTC"></property> 
+		<property name="username" value="sluser"></property> <property name="password" 
+		value="0000"></property> </bean> -->
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+		<property name="driverClassName" value="org.h2.Driver"></property>
 		<property name="url"
-			value="jdbc:mysql://127.0.0.1:3306/slu?useSSL=false&amp;serverTimezone=UTC"></property>
-		<property name="username" value="sluser"></property>
-		<property name="password" value="0000"></property>
+			value="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"></property>
+		<property name="username" value="sa"></property>
+		<property name="password" value=""></property>
 	</bean>
 
 	<!-- DB와의 연결과 SQL의 실행에 대한 모든 것을 가진 객체 -->
@@ -29,11 +37,28 @@
 		<!-- MyBatis 설정 파일 -->
 		<property name="configLocation" value="classpath:/mybatis-config.xml"></property>
 	</bean>
-	
+
 	<!-- ref : https://m.blog.naver.com/sksk3479/221178451242 -->
-	<bean id="userDetailsService"
-		class="com.slu.security.service.JwtUserDetailsService">
+	<bean id="userDetailsService" class="com.slu.security.service.JwtUserDetailsService">
 		<qualifier value="jwtUserDetailsService" />
 	</bean>
-	
+
+	<!-- ref : https://howtodoinjava.com/jpa/spring-hibernate-jpa-configuration-example/ -->
+	<!-- bean 생성 문제 해결 : https://stackoverflow.com/questions/27968333/cannot-create-inner-bean-org-springframework-orm-jpa-vendor-hibernatejpavendora -->
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="packagesToScan" value="com.slu.model.security"></property>
+
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+			<property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"></property>
+			</bean>
+		</property>
+
+	</bean>
+
+	<jpa:repositories base-package="com.slu.security.repository" />
+	<context:component-scan base-package="com.slu" />
+
 </beans>
