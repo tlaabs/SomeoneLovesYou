@@ -13,45 +13,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public class JwtUser implements UserDetails {
 
-    private final Long id;
-    private final String username;
-    private final String firstname;
-    private final String lastname;
-    private final String password;
+    private final String userid;
+
     private final String email;
-    private final Collection<? extends GrantedAuthority> authorities;
-    private final boolean enabled;
-    private final Date lastPasswordResetDate;
 
     public JwtUser(
-          Long id,
-          String username,
-          String firstname,
-          String lastname,
-          String email,
-          String password, Collection<? extends GrantedAuthority> authorities,
-          boolean enabled,
-          Date lastPasswordResetDate
+          String userid,
+          String email 
     ) {
-        this.id = id;
-        this.username = username;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.userid = userid;
         this.email = email;
-        this.password = password;
-        this.authorities = authorities;
-        this.enabled = enabled;
-        this.lastPasswordResetDate = lastPasswordResetDate;
-    }
-
-    @JsonIgnore
-    public Long getId() {
-        return id;
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return userid;
     }
 
     @JsonIgnore
@@ -72,14 +48,6 @@ public class JwtUser implements UserDetails {
         return true;
     }
 
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -87,21 +55,21 @@ public class JwtUser implements UserDetails {
     @JsonIgnore
     @Override
     public String getPassword() {
-        return password;
+        return userid;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return null;
     }
 
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return false;
     }
 
     @JsonIgnore
     public Date getLastPasswordResetDate() {
-        return lastPasswordResetDate;
+        return new Date();
     }
 }
