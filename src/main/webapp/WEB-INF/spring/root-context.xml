@@ -52,13 +52,19 @@
 
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-			<property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"></property>
+				<property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"></property>
 			</bean>
 		</property>
 
 	</bean>
 
+	<bean id="jwtTokenUtil" class="com.slu.security.JwtTokenUtil" />
+
 	<jpa:repositories base-package="com.slu.security.repository" />
 	<context:component-scan base-package="com.slu" />
+	<context:component-scan base-package="com.slu.config" />
+	<!-- servlet-context에도 추가해주고 여기서도 추가해줌 어떤 차이지? -->
+	<context:property-placeholder location="/WEB-INF/config/config.properties" />
+
 
 </beans>
