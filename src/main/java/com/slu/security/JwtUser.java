@@ -58,11 +58,13 @@ public class JwtUser implements UserDetails {
         return userid;
     }
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
-
+    
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return false;

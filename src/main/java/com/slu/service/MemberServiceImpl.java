@@ -9,15 +9,9 @@ import com.slu.persistence.MemberDAO;
 
 @Service
 public class MemberServiceImpl implements MemberService{
-	
+
 	@Inject
 	private MemberDAO dao;
-
-	@Override
-	public String getTime() {
-		// TODO Auto-generated method stub
-		return dao.getTime();
-	}
 
 	@Override
 	public void insertMember(MemberVO vo) {
@@ -26,9 +20,14 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public MemberVO readMember(String userid) throws Exception {
+	public MemberVO readMember(String userid) {
 		// TODO Auto-generated method stub
 		return dao.readMember(userid);
 	}
-	
+
+	@Override
+	public MemberVO readWithPWD(String userid, String userpwd) throws Exception {
+		// TODO Auto-generated method stub
+		return dao.readWithPWD(userid, userpwd);
+	}
 }
