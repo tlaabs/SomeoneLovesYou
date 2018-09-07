@@ -21,8 +21,10 @@ import com.slu.security.JwtUser;
 import com.slu.service.MemberService;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.swagger.annotations.Api;
 
 @RestController
+@Api(value="swag-rest-controller")
 public class UserController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);

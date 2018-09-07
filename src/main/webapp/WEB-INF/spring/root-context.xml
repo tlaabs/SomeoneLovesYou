@@ -71,6 +71,7 @@
 	<context:component-scan base-package="com.slu.config" />
 	<context:component-scan base-package="com.slu.persistence" />
 	<context:component-scan base-package="com.slu.service" />
+	<context:component-scan base-package="com.slu.swagger"/>
 
 	<!-- servlet-context에도 추가해주고 여기서도 추가해줌 어떤 차이지? -->
 	<context:property-placeholder location="/WEB-INF/config/config.properties" />
