@@ -36,4 +36,9 @@ public class HomeController {
 		return "home";
 	}
 	
+	@RequestMapping(value ="/api", method= RequestMethod.GET)
+	public String apiBoard(){
+		return "redirect:/swagger-ui.html";
+	}
+	
 }

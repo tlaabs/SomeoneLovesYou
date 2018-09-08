@@ -1,18 +1,11 @@
-package com.slu.domain;
+package com.slu.dto;
 
-public class MemberVO {
-	private String userid;
-	private String userpwd;
-	private String email;
-	private String state;
+public class SignupDTO {
 	private String username;
-	
-	public String getState() {
-		return state;
-	}
-	public void setState(String state) {
-		this.state = state;
-	}
+	private String userid;
+	private String email;
+	private String userpwd;
+	private String state;
 	public String getUsername() {
 		return username;
 	}
@@ -25,19 +18,24 @@ public class MemberVO {
 	public void setUserid(String userid) {
 		this.userid = userid;
 	}
-	public String getUserpwd() {
-		return userpwd;
-	}
-	public void setUserpwd(String userpwd) {
-		this.userpwd = userpwd;
-	}
 	public String getEmail() {
 		return email;
 	}
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+	public String getUserpwd() {
+		return userpwd;
+	}
+	public void setUserpwd(String userpwd) {
+		this.userpwd = userpwd;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
 	
 	
 }
