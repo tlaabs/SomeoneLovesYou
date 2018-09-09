@@ -29,7 +29,7 @@ public class SwaggerConfig extends WebMvcConfigurerAdapter{
 	public Docket api(){
 		return new Docket(DocumentationType.SWAGGER_2)
 				.select()
-				.apis(RequestHandlerSelectors.basePackage("com.slu.controller"))
+				.apis(RequestHandlerSelectors.basePackage("com.slu.rest.controller"))
 				.paths(PathSelectors.any())
 				.build()
 				.apiInfo(apiInfo())

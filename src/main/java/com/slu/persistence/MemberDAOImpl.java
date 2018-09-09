@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import com.slu.domain.MemberVO;
+import com.slu.dto.SignupDTO;
 
 @Repository
 public class MemberDAOImpl implements MemberDAO{
@@ -20,9 +21,9 @@ public class MemberDAOImpl implements MemberDAO{
 			"com.slu.mapper.MemberMapper";
 
 	@Override
-	public void insertMember(MemberVO vo) {
+	public void insertMember(SignupDTO dto) {
 		// TODO Auto-generated method stub
-		sqlSession.insert(namespace+".insertMember", vo);
+		sqlSession.insert(namespace+".insertMember", dto);
 	}
 	
 	

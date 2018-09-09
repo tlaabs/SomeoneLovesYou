@@ -1,4 +1,4 @@
-package com.slu.controller;
+package com.slu.rest.controller;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +26,6 @@ import com.slu.security.JwtUser;
 import com.slu.service.MemberService;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
@@ -71,15 +71,23 @@ public class UserRestController {
 	}
 	
 	@ApiOperation(value="회원가입")
+	@ApiImplicitParams({
+	})
 	@RequestMapping(value = "signup", method = RequestMethod.POST)
-	public String signUp(SignupDTO dto){
-		
-		return "";
+	public ResponseEntity signUp(@RequestBody SignupDTO userInfo){
+		try{
+		memberService.insertMember(userInfo);
+		}catch(Exception e){
+			return new ResponseEntity<Response>(
+					ResponseFactory.create(ResponseFactory.FAIL,"아이디 중복"),HttpStatus.CONFLICT);
+		}
+		return new ResponseEntity<Response>(
+				ResponseFactory.create(ResponseFactory.SUCCESS,"가입완료"),HttpStatus.OK);
 	}
 	
 	@ApiOperation(value="아이디 중복확인")
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "userid", value = "아이디", required = true, dataType = "string", paramType = "query", defaultValue = "01012345678")
+//		@ApiImplicitParam(name = "userid", value = "아이디", required = true, dataType = "string", paramType = "query")
 	})
 //	@ApiResponses({
 //		@ApiResponse(code=200, message = "회원가입 성공")
@@ -93,7 +101,7 @@ public class UserRestController {
 		}
 
 		return new ResponseEntity<Response>(
-				ResponseFactory.create(ResponseFactory.SUCCESS),HttpStatus.OK);
+				ResponseFactory.create(ResponseFactory.SUCCESS,"사용가능"),HttpStatus.OK);
 	}
 
 }

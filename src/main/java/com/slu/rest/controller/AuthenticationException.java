@@ -1,4 +1,4 @@
-package com.slu.controller;
+package com.slu.rest.controller;
 
 public class AuthenticationException extends RuntimeException {
     public AuthenticationException(String message, Throwable cause) {

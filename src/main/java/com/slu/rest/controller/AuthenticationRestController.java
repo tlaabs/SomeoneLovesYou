@@ -1,4 +1,4 @@
-package com.slu.controller;
+package com.slu.rest.controller;
 
 import java.util.Objects;
 

@@ -4,8 +4,8 @@
 <mapper namespace="com.slu.mapper.MemberMapper">
 
 	<insert id="insertMember">
-		insert into tbl_member (userid,email) values
-		(#{userid}, #{email})
+		insert into tbl_member (userid,userpwd,email,state,username) values
+		(#{userid}, #{userpwd}, #{email}, #{state}, #{username})
 	</insert>
 
 	<select id="readMember" resultType="com.slu.domain.MemberVO">

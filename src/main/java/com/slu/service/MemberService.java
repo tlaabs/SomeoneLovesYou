@@ -1,10 +1,11 @@
 package com.slu.service;
 
 import com.slu.domain.MemberVO;
+import com.slu.dto.SignupDTO;
 
 public interface MemberService {
 	
-	public void insertMember(MemberVO vo);
+	public void insertMember(SignupDTO dto) throws Exception;
 	
 	public MemberVO readMember(String userid);
 	

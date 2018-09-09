@@ -45,6 +45,7 @@
 	 -->
 
 	<context:component-scan base-package="com.slu.controller" />
+	<context:component-scan base-package="com.slu.rest.controller" />
 	<context:component-scan base-package="com.slu.config" />
 	<context:component-scan base-package="com.slu.swagger" />
 	
