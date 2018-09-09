@@ -1,5 +1,7 @@
 package com.slu.rest.controller;
 
+import java.util.Objects;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,7 +12,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,8 +25,10 @@ import com.slu.domain.MemberVO;
 import com.slu.dto.SignupDTO;
 import com.slu.rest.response.Response;
 import com.slu.rest.response.ResponseFactory;
+import com.slu.security.JwtAuthenticationRequest;
 import com.slu.security.JwtTokenUtil;
 import com.slu.security.JwtUser;
+import com.slu.security.service.JwtAuthenticationResponse;
 import com.slu.service.MemberService;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -49,25 +55,62 @@ public class UserRestController {
 	@Inject
 	private MemberService memberService;
 	
-	@ApiOperation(value = "로그인 유저")	
-	@RequestMapping(value = "user", method = RequestMethod.GET)
+	@ApiOperation(value = "아디이/패스워드로 로그인")
+	@RequestMapping(value = "login/idpwd", method = RequestMethod.POST)
+	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
+		
+		try{
+		//아이디 비번일치 확인
+		authenticate(authenticationRequest.getUserid(), authenticationRequest.getUserpwd());
+
+
+		// Reload password post-security so we can generate the token
+		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUserid());
+		final String token = jwtTokenUtil.generateToken(userDetails);
+
+		// Return the token
+		//200, 성공
+		return new ResponseEntity<Response>(
+				ResponseFactory.create(
+						ResponseFactory.SUCCESS,"",new JwtAuthenticationResponse(token)),
+				HttpStatus.OK
+				);
+		}catch(Exception e){
+			//인증 실패시 401 에러 출력
+			return new ResponseEntity<Response>(
+					ResponseFactory.create(ResponseFactory.FAIL,"실패"),HttpStatus.UNAUTHORIZED);
+		}
+	}
+	
+
+	@ExceptionHandler({AuthenticationException.class})
+	public ResponseEntity<String> handleAuthenticationException(AuthenticationException e) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+	}
+
+	private void authenticate(String userid, String userpwd) throws Exception{
+		Objects.requireNonNull(userid);
+		Objects.requireNonNull(userpwd);
+
+
+		MemberVO user = memberService.readWithPWD(userid, userpwd);
+		if(user == null) throw new Exception();
+	}
+	
+	@ApiOperation(value = "토큰으로 로그인")	
+	@RequestMapping(value = "login/token", method = RequestMethod.POST)
 	public ResponseEntity<?> getAuthenticatedUser(HttpServletRequest request) {
 		try{
 			String token = request.getHeader(tokenHeader).substring(7);
 
 			String username = jwtTokenUtil.getUsernameFromToken(token);
 			JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
-			return new ResponseEntity<JwtUser>(user,HttpStatus.ACCEPTED);
+			return new ResponseEntity<Response>(
+					ResponseFactory.create(ResponseFactory.SUCCESS,"성공",user),HttpStatus.OK);
 		}catch(ExpiredJwtException e){
-			return new ResponseEntity<String>("Token expired", HttpStatus.BAD_REQUEST); 
+			return new ResponseEntity<Response>(
+					ResponseFactory.create(ResponseFactory.FAIL,"만료된 토큰"),HttpStatus.BAD_REQUEST);
 		}
-	}
-
-	@RequestMapping(value = "users", method = RequestMethod.GET)
-	public String time()throws Exception{
-		//		return memberService.getTime();
-		MemberVO user = memberService.readMember("devsim");
-		return user.getEmail();
 	}
 	
 	@ApiOperation(value="회원가입")
