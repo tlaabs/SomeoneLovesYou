@@ -10,6 +10,8 @@ public final class JwtUserFactory {
     public static JwtUser create(MemberVO user) {
         return new JwtUser(
                 user.getUserid(),
+                user.getUserpwd(),
+                user.getUsername(),
                 user.getEmail());
 
     }

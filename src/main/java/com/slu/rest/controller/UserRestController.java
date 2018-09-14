@@ -28,10 +28,10 @@ import com.slu.rest.response.ResponseFactory;
 import com.slu.security.JwtAuthenticationRequest;
 import com.slu.security.JwtTokenUtil;
 import com.slu.security.JwtUser;
+import com.slu.security.RespJwtUser;
 import com.slu.security.service.JwtAuthenticationResponse;
 import com.slu.service.MemberService;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
@@ -55,7 +55,7 @@ public class UserRestController {
 	@Inject
 	private MemberService memberService;
 	
-	@ApiOperation(value = "아디이/패스워드로 로그인")
+	@ApiOperation(value = "아이디/패스워드로 로그인")
 	@RequestMapping(value = "login/idpwd", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
 		
@@ -97,19 +97,32 @@ public class UserRestController {
 		if(user == null) throw new Exception();
 	}
 	
+	private JwtUser authenticateByToken(HttpServletRequest request) throws Exception{
+		try{
+		String token = request.getHeader(tokenHeader).substring(7);
+		String username = jwtTokenUtil.getUsernameFromToken(token);
+		JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
+		return user;
+		}catch(Exception e){
+			throw new Exception("토큰 에러");
+		}
+	}
+	
 	@ApiOperation(value = "토큰으로 로그인")	
 	@RequestMapping(value = "login/token", method = RequestMethod.POST)
 	public ResponseEntity<?> getAuthenticatedUser(HttpServletRequest request) {
 		try{
-			String token = request.getHeader(tokenHeader).substring(7);
-
-			String username = jwtTokenUtil.getUsernameFromToken(token);
-			JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
+			JwtUser user = authenticateByToken(request);
+			RespJwtUser ruser = new RespJwtUser(
+					user.getUsername(),
+					user.getUserid(),
+					user.getEmail()
+					);
 			return new ResponseEntity<Response>(
-					ResponseFactory.create(ResponseFactory.SUCCESS,"성공",user),HttpStatus.OK);
-		}catch(ExpiredJwtException e){
+					ResponseFactory.create(ResponseFactory.SUCCESS,"성공",ruser),HttpStatus.OK);
+		}catch(Exception e){
 			return new ResponseEntity<Response>(
-					ResponseFactory.create(ResponseFactory.FAIL,"만료된 토큰"),HttpStatus.BAD_REQUEST);
+					ResponseFactory.create(ResponseFactory.FAIL,e.getMessage()),HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -146,5 +159,12 @@ public class UserRestController {
 		return new ResponseEntity<Response>(
 				ResponseFactory.create(ResponseFactory.SUCCESS,"사용가능"),HttpStatus.OK);
 	}
+	
+//	@ApiOperation(value="친구 리스트 받기")
+//	@RequestMapping(value="friends", method=RequestMethod.POST)
+//	public ResponseEntity<Response> getFriendsList(@RequestMap)
+//	{
+//		
+//	}
 
 }

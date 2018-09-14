@@ -1,11 +1,12 @@
 package com.slu.dto;
 
 public class SignupDTO {
-	private String username;
 	private String userid;
-	private String email;
 	private String userpwd;
+	private String email;
 	private String state;
+	private String username;
+
 	public String getUsername() {
 		return username;
 	}
