@@ -18,7 +18,7 @@ public class MemberDAOImpl implements MemberDAO{
 	private SqlSession sqlSession;
 	
 	private static final String namespace =
-			"com.slu.mapper.MemberMapper";
+			"com.slu.mappers.MemberMapper";
 
 	@Override
 	public void insertMember(SignupDTO dto) {
@@ -45,6 +45,23 @@ public class MemberDAOImpl implements MemberDAO{
 		return (MemberVO)
 				sqlSession.selectOne(namespace+".readWithPWD", paramMap);
 	}
+
+
+
+	@Override
+	public void updateMember(String userid, String usernpwd) throws Exception{
+		// TODO Auto-generated method stub
+		Map<String,Object> paramMap = new HashMap<String, Object>();
+		System.out.println("inner 1: " + userid);
+		System.out.println("inner 2: " + usernpwd);
+//		
+		paramMap.put("userid", userid);
+		paramMap.put("usernpwd", usernpwd);
+		
+		sqlSession.update(namespace + ".updateMember",paramMap);
+	}
+	
+	
 	
 	
 }

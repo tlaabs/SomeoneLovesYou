@@ -36,4 +36,23 @@ public class MemberServiceImpl implements MemberService{
 		// TODO Auto-generated method stub
 		return dao.readWithPWD(userid, userpwd);
 	}
+
+	@Override
+	public void updateMember(String userid, String usernpwd1, String usernpwd2) throws Exception{
+//		 TODO Auto-generated method stub
+		
+		if(compareToPasswords(usernpwd1, usernpwd2)){
+			dao.updateMember(userid, usernpwd1);
+		}else{
+			throw new Exception("비번 불일치");
+		}
+		dao.updateMember(userid, usernpwd1);
+		
+	}
+	
+	private boolean compareToPasswords(String usernpwd1, String usernpwd2){
+		if(usernpwd1.equals(usernpwd2)) return true;
+		return false;
+	}
+	
 }

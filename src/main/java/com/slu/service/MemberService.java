@@ -11,4 +11,6 @@ public interface MemberService {
 	
 	public MemberVO readWithPWD(String userid, String userpwd)throws Exception;
 	
+	public void updateMember(String userid, String usernpwd1, String usernpwd2) throws Exception;
+	
 }

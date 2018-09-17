@@ -9,5 +9,6 @@ public interface MemberDAO {
 	public MemberVO readMember(String userid);
 	
 	public MemberVO readWithPWD(String userid, String userpwd)throws Exception;
-
+	
+	public void updateMember(String userid, String usernpwd) throws Exception;
 }

@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.slu.mapper.MemberMapper">
+<mapper namespace="com.slu.mappers.MemberMapper">
+
+	<update id="updateMember">
+		update tbl_member
+		set userpwd = #{usernpwd}
+		where userid = #{userid}
+	</update>
 
 	<insert id="insertMember">
-		insert into tbl_member (userid,userpwd,email,state,username) values
-		(#{userid}, #{userpwd}, #{email}, #{state}, #{username})
+		insert into tbl_member
+		(userid,userpwd,email,state,username) values
+		(#{userid}, #{userpwd},
+		#{email}, #{state}, #{username})
 	</insert>
 
 	<select id="readMember" resultType="com.slu.domain.MemberVO">
@@ -14,7 +22,8 @@
 		from
 		tbl_member
 		where
-		userid = #{userid}
+		userid =
+		#{userid}
 	</select>
 
 	<select id="readWithPWD" resultType="com.slu.domain.MemberVO">
