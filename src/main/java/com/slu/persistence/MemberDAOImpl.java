@@ -60,6 +60,16 @@ public class MemberDAOImpl implements MemberDAO{
 		
 		sqlSession.update(namespace + ".updateMember",paramMap);
 	}
+
+
+
+	@Override
+	public void updateMemberWithNoPWD(MemberVO dto) {
+		// TODO Auto-generated method stub
+		sqlSession.update(namespace + ".updateMemberWithNoPWD", dto);
+	}
+	
+	
 	
 	
 	

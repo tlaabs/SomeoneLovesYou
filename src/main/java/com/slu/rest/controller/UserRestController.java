@@ -188,5 +188,27 @@ public class UserRestController {
 					ResponseFactory.create(ResponseFactory.FAIL,e.getMessage()),HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@RequestMapping(value="update/nopwd", method=RequestMethod.POST)
+	public ResponseEntity<Response> updateWithNoPwd(
+			HttpServletRequest request,
+			@RequestBody MemberVO vo){
+		try{
+			JwtUser user = authenticateByToken(request);
+			MemberVO userVO = new MemberVO();
+			userVO.setUserid(user.getUsername());
+			userVO.setState(vo.getState());
+			userVO.setEmotion(vo.getEmotion());
+			memberService.updateMemberWithNoPWD(userVO);
+			
+			MemberVO readUser = memberService.readMember(userVO.getUserid());
+			
+			return new ResponseEntity<Response>(
+					ResponseFactory.create(ResponseFactory.SUCCESS,"¼º°ø",readUser),HttpStatus.OK);
+		}catch(Exception e){
+			return new ResponseEntity<Response>(
+					ResponseFactory.create(ResponseFactory.FAIL,e.getMessage()),HttpStatus.BAD_REQUEST);
+		}
+	}
 
 }

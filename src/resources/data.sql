@@ -1,3 +1,6 @@
+--蜡历积己
+create user 'sluser'@'%' identified by '0000';
+
 --蜡历 鼻茄
 GRANT ALL PRIVILEGES ON slu.* TO 'sluser'@'%';
 
@@ -10,6 +13,7 @@ userid VARCHAR(50) NOT NULL,
 userpwd VARCHAR(50) NOT NULL,
 email VARCHAR(50) NOT NULL,
 state VARCHAR(50),
+emotion VARCHAR(50),
 username VARCHAR(50) NOT NULL,
 PRIMARY KEY(userid)
 );

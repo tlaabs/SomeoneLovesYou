@@ -11,4 +11,6 @@ public interface MemberDAO {
 	public MemberVO readWithPWD(String userid, String userpwd)throws Exception;
 	
 	public void updateMember(String userid, String usernpwd) throws Exception;
+	
+	public void updateMemberWithNoPWD(MemberVO dto);
 }

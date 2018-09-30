@@ -34,5 +34,12 @@
 		where
 		userid = #{userid} and userpwd = #{userpwd}
 	</select>
+	
+	<update id="updateMemberWithNoPWD">
+	update tbl_member
+	set state = #{state},
+	emotion = #{emotion}
+	where userid = #{userid}
+	</update>
 
 </mapper>

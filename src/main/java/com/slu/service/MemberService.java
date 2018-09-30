@@ -13,4 +13,5 @@ public interface MemberService {
 	
 	public void updateMember(String userid, String usernpwd1, String usernpwd2) throws Exception;
 	
+	public void updateMemberWithNoPWD(MemberVO vo);
 }

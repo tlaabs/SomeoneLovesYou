@@ -54,5 +54,12 @@ public class MemberServiceImpl implements MemberService{
 		if(usernpwd1.equals(usernpwd2)) return true;
 		return false;
 	}
+
+	@Override
+	public void updateMemberWithNoPWD(MemberVO vo) {
+		// TODO Auto-generated method stub
+		dao.updateMemberWithNoPWD(vo);
+	}
+	
 	
 }
