@@ -1,5 +1,7 @@
 package com.slu.rest.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -209,6 +211,25 @@ public class UserRestController {
 			return new ResponseEntity<Response>(
 					ResponseFactory.create(ResponseFactory.FAIL,e.getMessage()),HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	@RequestMapping(value="get/friends", method=RequestMethod.POST)
+	public List<MemberVO> getFriends(@RequestBody List<MemberVO> vos){
+		ArrayList result = new ArrayList<MemberVO>();
+		for(int i = 0 ; i < vos.size(); i++){
+			MemberVO item = vos.get(i); 
+			System.out.println(item.getUserid());
+			String user_id = item.getUserid();
+			memberService.readMember(user_id);
+			MemberVO existMember = memberService.readMember(item.getUserid().trim());
+
+			if(existMember != null){
+				existMember.setUserpwd("-");
+				result.add(existMember);
+			}
+		}
+		
+		return result;
 	}
 
 }

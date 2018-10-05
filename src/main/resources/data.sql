@@ -18,6 +18,16 @@ username VARCHAR(50) NOT NULL,
 PRIMARY KEY(userid)
 );
 
+create table tbl_heart(
+id int not null,
+sender varchar(50) not null,
+receiver varchar(50) not null,
+updatedate date,
+primary key(id),
+constraint heart_member_1 foreign key (sender) references tbl_member (userid),
+constraint heart_member_2 foreign key (receiver) references tbl_member (userid)
+)
+
 --test case
 insert into tbl_member(userid,userpwd,email,state,username) values("01065512046","1234","tlaabs@naver.com","행복","심세용");
 insert into tbl_member(userid,userpwd,email,state,username) values("01023945707","5678","csm1615@naver.com","감동","소나무");

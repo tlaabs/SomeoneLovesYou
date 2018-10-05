@@ -25,11 +25,7 @@
 		<property name="username" value="sluser"></property>
 		<property name="password" value="0000"></property>
 	</bean>
-	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
-		<property name="driverClassName" value="org.h2.Driver"></property> <property 
-		name="url" value="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"></property> 
-		<property name="username" value="sa"></property> <property name="password" 
-		value=""></property> </bean> -->
+	
 	<!-- DB와의 연결과 SQL의 실행에 대한 모든 것을 가진 객체 -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"></property>
