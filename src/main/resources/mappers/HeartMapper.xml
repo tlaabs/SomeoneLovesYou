@@ -8,6 +8,12 @@
 		(sender,receiver,updatedate)
 		values(#{sender},#{receiver},now())
 	</insert>
+	
+	<select id="getHeartHistory" resultType="com.slu.domain.HeartVO">
+	select * from
+	tbl_heart
+	where receiver = #{id}
+	</select>
 
 
 </mapper>

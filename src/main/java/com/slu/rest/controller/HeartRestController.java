@@ -1,5 +1,8 @@
 package com.slu.rest.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.slu.domain.HeartVO;
+import com.slu.domain.MemberVO;
 import com.slu.rest.response.Response;
 import com.slu.rest.response.ResponseFactory;
 import com.slu.security.JwtAuthenticationRequest;
@@ -43,24 +48,38 @@ public class HeartRestController {
 	private UserDetailsService userDetailsService;
 
 	@Inject
-	private HeartService memberService;
+	private HeartService heartService;
 	
 	@RequestMapping(value = "send", method = RequestMethod.POST)
-	public ResponseEntity<?> sendHeart(){
+	public ResponseEntity<Response> sendHeart(@RequestBody HeartVO vo){
+		
 		try{
-
-			// Return the token
+			heartService.send(vo);
+			
 			//200, 성공
 			return new ResponseEntity<Response>(
-					ResponseFactory.create(
-							ResponseFactory.SUCCESS,"",new JwtAuthenticationResponse(token)),
-					HttpStatus.OK
-					);
+					ResponseFactory.create(ResponseFactory.SUCCESS,"성공"),HttpStatus.OK);
 		}catch(Exception e){
-			//인증 실패시 401 에러 출력
 			return new ResponseEntity<Response>(
-					ResponseFactory.create(ResponseFactory.FAIL,"실패"),HttpStatus.UNAUTHORIZED);
+					ResponseFactory.create(ResponseFactory.FAIL,"실패"),HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@RequestMapping(value = "gets", method = RequestMethod.POST)
+	public ResponseEntity<Response> getHeartHistory(@RequestBody MemberVO vo){
+		try{
+			System.out.println(vo.getUserid());
+			List<HeartVO> arr = heartService.getHistory(vo.getUserid());
+			System.out.println("size : " + arr.size());
+			//200, 성공
+			return new ResponseEntity<Response>(
+					ResponseFactory.create(ResponseFactory.SUCCESS,"성공",arr),HttpStatus.OK);
+		}catch(Exception e){
+			return new ResponseEntity<Response>(
+					ResponseFactory.create(ResponseFactory.FAIL,"실패"),HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	
 
 }

@@ -1,5 +1,7 @@
 package com.slu.persistence;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.apache.ibatis.session.SqlSession;
@@ -21,6 +23,15 @@ public class HeartDAOImpl implements HeartDAO{
 		// TODO Auto-generated method stub
 		sqlSession.insert(namespace + ".sendHeart", vo);
 	}
+
+	@Override
+	public List<HeartVO> getHeartHistory(String id) {
+		// TODO Auto-generated method stub
+		List<HeartVO> arr = sqlSession.selectList(namespace + ".getHeartHistory", id); 
+		return arr;
+	}
+	
+	
 	
 	
 	
