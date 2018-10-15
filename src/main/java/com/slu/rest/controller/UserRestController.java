@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.slu.analyzer.AnalyzeResult;
+import com.slu.analyzer.EmotionAnalyzer;
 import com.slu.domain.MemberVO;
 import com.slu.dto.SignupDTO;
 import com.slu.dto.UpdateMemberDTO;
@@ -231,5 +233,12 @@ public class UserRestController {
 		
 		return result;
 	}
-
+		
+	@RequestMapping(value = "emotion", method = RequestMethod.GET)
+	public ResponseEntity<Response> emotionAnalyze(@RequestParam(value="profile") String profile) throws Exception{
+		AnalyzeResult rs = EmotionAnalyzer.run(profile);
+		
+		return new ResponseEntity<Response>(
+				ResponseFactory.create(ResponseFactory.SUCCESS,"¼º°ø",rs),HttpStatus.OK);
+	}
 }
