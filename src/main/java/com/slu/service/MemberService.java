@@ -5,7 +5,7 @@ import com.slu.dto.SignupDTO;
 
 public interface MemberService {
 	
-	public void insertMember(SignupDTO dto) throws Exception;
+	public void insertMember(SignupDTO dto);
 	
 	public MemberVO readMember(String userid);
 	

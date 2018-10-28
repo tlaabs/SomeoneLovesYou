@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.slu.domain.MemberVO;
 import com.slu.dto.SignupDTO;
 import com.slu.persistence.MemberDAO;
+import com.slu.exception.*;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -15,20 +16,22 @@ public class MemberServiceImpl implements MemberService{
 	private MemberDAO dao;
 
 	@Override
-	public void insertMember(SignupDTO dto) throws Exception{
+	public void insertMember(SignupDTO dto){
 		// TODO Auto-generated method stub
-		MemberVO member = dao.readMember(dto.getUserid());
+		//이미 존재하면 런타임 예외 발생
+		MemberVO member = dao.read(dto.getUserid());
 		if(member != null){
-			throw new Exception();
+			throw new UserAlreadySignedUpException();
 		}else{
-			dao.insertMember(dto);
+			//없는 아이디면 등록 
+			dao.insert(dto);
 		}
 	}
 
 	@Override
 	public MemberVO readMember(String userid) {
 		// TODO Auto-generated method stub
-		return dao.readMember(userid);
+		return dao.read(userid);
 	}
 
 	@Override
@@ -41,13 +44,12 @@ public class MemberServiceImpl implements MemberService{
 	public void updateMember(String userid, String usernpwd1, String usernpwd2) throws Exception{
 //		 TODO Auto-generated method stub
 		
+		//pwd1와 pwd2가 맞으면 일단 패스함.
 		if(compareToPasswords(usernpwd1, usernpwd2)){
-			dao.updateMember(userid, usernpwd1);
+			dao.update(userid, usernpwd1);
 		}else{
 			throw new Exception("비번 불일치");
-		}
-		dao.updateMember(userid, usernpwd1);
-		
+		}	
 	}
 	
 	private boolean compareToPasswords(String usernpwd1, String usernpwd2){
@@ -58,7 +60,7 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public void updateMemberWithNoPWD(MemberVO vo) {
 		// TODO Auto-generated method stub
-		dao.updateMemberWithNoPWD(vo);
+		dao.updateWithNoPWD(vo);
 	}
 	
 	

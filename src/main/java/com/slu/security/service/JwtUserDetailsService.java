@@ -19,14 +19,15 @@ public class JwtUserDetailsService implements UserDetailsService{
 	@Inject
 	private MemberService memberService;
 
+	//메서드명은 Username이지만 실체는 userid를 받음.
 	@Override
-	public UserDetails loadUserByUsername(String username){
+	public UserDetails loadUserByUsername(String userid){
 		MemberVO user = null;
 		try{  
-			user = memberService.readMember(username);
+			user = memberService.readMember(userid);
 		}catch(Exception e){}
 		if (user == null) {
-			throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
+			throw new UsernameNotFoundException(String.format("No user found with username '%s'.", userid));
 		} else {
 			return JwtUserFactory.create(user);
 		}

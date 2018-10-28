@@ -21,20 +21,16 @@ public class MemberDAOImpl implements MemberDAO{
 			"com.slu.mappers.MemberMapper";
 
 	@Override
-	public void insertMember(SignupDTO dto) {
+	public void insert(SignupDTO dto) {
 		// TODO Auto-generated method stub
-		sqlSession.insert(namespace+".insertMember", dto);
+		sqlSession.insert(namespace+".insert", dto);
 	}
 	
-	
-
 	@Override
-	public MemberVO readMember(String userid) {
+	public MemberVO read(String userid) {
 		// TODO Auto-generated method stub
-		return sqlSession.selectOne(namespace + ".readMember", userid);
+		return sqlSession.selectOne(namespace + ".read", userid);
 	}
-
-
 
 	@Override
 	public MemberVO readWithPWD(String userid, String userpwd) throws Exception {
@@ -49,24 +45,22 @@ public class MemberDAOImpl implements MemberDAO{
 
 
 	@Override
-	public void updateMember(String userid, String usernpwd) throws Exception{
+	public void update(String userid, String usernpwd) throws Exception{
 		// TODO Auto-generated method stub
 		Map<String,Object> paramMap = new HashMap<String, Object>();
-		System.out.println("inner 1: " + userid);
-		System.out.println("inner 2: " + usernpwd);
-//		
+
 		paramMap.put("userid", userid);
 		paramMap.put("usernpwd", usernpwd);
 		
-		sqlSession.update(namespace + ".updateMember",paramMap);
+		sqlSession.update(namespace + ".update",paramMap);
 	}
 
 
 
 	@Override
-	public void updateMemberWithNoPWD(MemberVO dto) {
+	public void updateWithNoPWD(MemberVO dto) {
 		// TODO Auto-generated method stub
-		sqlSession.update(namespace + ".updateMemberWithNoPWD", dto);
+		sqlSession.update(namespace + ".updateWithNoPWD", dto);
 	}
 	
 	

@@ -28,6 +28,7 @@ import com.slu.analyzer.EmotionAnalyzer;
 import com.slu.domain.MemberVO;
 import com.slu.dto.SignupDTO;
 import com.slu.dto.UpdateMemberDTO;
+import com.slu.exception.UserAlreadySignedUpException;
 import com.slu.rest.response.Response;
 import com.slu.rest.response.ResponseFactory;
 import com.slu.security.JwtAuthenticationRequest;
@@ -65,12 +66,12 @@ public class UserRestController {
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
 
 		try{
-			//아이디 비번일치 확인
+			//아이디 비번일치 확인, 없는 계정이거나 정보가 올바르지 않으면 예외 발생
 			authenticate(authenticationRequest.getUserid(), authenticationRequest.getUserpwd());
-
 
 			// Reload password post-security so we can generate the token
 			final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUserid());
+			//유저 정보를 가져와 토큰을 생성.
 			final String token = jwtTokenUtil.generateToken(userDetails);
 
 			// Return the token
@@ -104,9 +105,11 @@ public class UserRestController {
 
 	private JwtUser authenticateByToken(HttpServletRequest request) throws Exception{
 		try{
+			//토큰 분리
 			String token = request.getHeader(tokenHeader).substring(7);
-			String username = jwtTokenUtil.getUsernameFromToken(token);
-			JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
+			//토큰을 통해 userid 가져옴. 메서드명 오류
+			String userid = jwtTokenUtil.getUsernameFromToken(token);
+			JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(userid);
 			return user;
 		}catch(Exception e){
 			throw new Exception("토큰 에러");
@@ -118,6 +121,11 @@ public class UserRestController {
 	public ResponseEntity<?> getAuthenticatedUser(HttpServletRequest request) {
 		try{
 			JwtUser user = authenticateByToken(request);
+			/**
+			 * RespJwtUser에는 아이디가 name, name이 아이디로 초기화되어있다.
+			 * 상속문제로 문제 미해결
+			 * 일단 RespJwtUser에 임시로 담아두자.  
+			 */
 			RespJwtUser ruser = new RespJwtUser(
 					user.getUsername(),
 					user.getUserid(),
@@ -138,7 +146,7 @@ public class UserRestController {
 	public ResponseEntity signUp(@RequestBody SignupDTO userInfo){
 		try{
 			memberService.insertMember(userInfo);
-		}catch(Exception e){
+		}catch(UserAlreadySignedUpException e){
 			return new ResponseEntity<Response>(
 					ResponseFactory.create(ResponseFactory.FAIL,"아이디 중복"),HttpStatus.CONFLICT);
 		}
@@ -165,14 +173,14 @@ public class UserRestController {
 				ResponseFactory.create(ResponseFactory.SUCCESS,"사용가능"),HttpStatus.OK);
 	}
 
-	@ApiOperation(value="회원정보 수정")
+	@ApiOperation(value="회원 패스워드 변경")
 	@RequestMapping(value="update", method=RequestMethod.POST)
 	public ResponseEntity<Response> updateMember(
 			HttpServletRequest request,
 			@RequestBody UpdateMemberDTO dto)
 	{
 		try{
-			System.out.println("udpate start");
+			//토큰을 통해 사용자 정보를 가져옴.
 			JwtUser user = authenticateByToken(request);
 
 			RespJwtUser ruser = new RespJwtUser(
@@ -180,8 +188,7 @@ public class UserRestController {
 					user.getUserid(),
 					user.getEmail()
 					);
-			System.out.println("inner : " + ruser.getUserid());
-			System.out.println("pwd : " + dto.getUsernpwd1());
+			
 			memberService.updateMember(ruser.getUserid(),dto.getUsernpwd1(),dto.getUsernpwd2());
 			
 			return new ResponseEntity<Response>(
@@ -193,12 +200,15 @@ public class UserRestController {
 		}
 	}
 	
+	@ApiOperation(value="패스워드 없이 회원 정보 변경")
 	@RequestMapping(value="update/nopwd", method=RequestMethod.POST)
 	public ResponseEntity<Response> updateWithNoPwd(
 			HttpServletRequest request,
 			@RequestBody MemberVO vo){
 		try{
+			//토큰 인증
 			JwtUser user = authenticateByToken(request);
+			//갱신될 정보로 MemberVO 재구성 
 			MemberVO userVO = new MemberVO();
 			userVO.setUserid(user.getUsername());
 			userVO.setState(vo.getState());
@@ -215,17 +225,21 @@ public class UserRestController {
 		}
 	}
 	
+	/*
+	 * 유저의 전화 번호(userid)들을 받아서 slu 서비스에 가입되어있는 친구들을 리스트로 반환
+	 */
+	@ApiOperation(value="모든 친구목록 불러오기")
 	@RequestMapping(value="get/friends", method=RequestMethod.POST)
 	public List<MemberVO> getFriends(@RequestBody List<MemberVO> vos){
 		ArrayList result = new ArrayList<MemberVO>();
 		for(int i = 0 ; i < vos.size(); i++){
 			MemberVO item = vos.get(i); 
-			System.out.println(item.getUserid());
 			String user_id = item.getUserid();
 			memberService.readMember(user_id);
 			MemberVO existMember = memberService.readMember(item.getUserid().trim());
 
 			if(existMember != null){
+				//비밀번호를 유출하면 안되니까 하이픈 처리
 				existMember.setUserpwd("-");
 				result.add(existMember);
 			}
@@ -234,6 +248,7 @@ public class UserRestController {
 		return result;
 	}
 		
+	@ApiOperation(value="평문 감정 분석")
 	@RequestMapping(value = "emotion", method = RequestMethod.GET)
 	public ResponseEntity<Response> emotionAnalyze(@RequestParam(value="profile") String profile) throws Exception{
 		AnalyzeResult rs = EmotionAnalyzer.run(profile);

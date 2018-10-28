@@ -50,6 +50,7 @@ public class HeartRestController {
 	@Inject
 	private HeartService heartService;
 	
+	@ApiOperation(value="하트 보내기")
 	@RequestMapping(value = "send", method = RequestMethod.POST)
 	public ResponseEntity<Response> sendHeart(@RequestBody HeartVO vo){
 		
@@ -65,12 +66,11 @@ public class HeartRestController {
 		}
 	}
 	
+	@ApiOperation(value="하트 목록 가져오기")
 	@RequestMapping(value = "gets", method = RequestMethod.POST)
 	public ResponseEntity<Response> getHeartHistory(@RequestBody MemberVO vo){
 		try{
-			System.out.println(vo.getUserid());
 			List<HeartVO> arr = heartService.getHistory(vo.getUserid());
-			System.out.println("size : " + arr.size());
 			//200, 성공
 			return new ResponseEntity<Response>(
 					ResponseFactory.create(ResponseFactory.SUCCESS,"성공",arr),HttpStatus.OK);

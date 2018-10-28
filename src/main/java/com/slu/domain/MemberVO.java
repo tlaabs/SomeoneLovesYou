@@ -8,8 +8,6 @@ public class MemberVO {
 	private String emotion;
 	private String username;
 	
-	
-	
 	public String getEmotion() {
 		return emotion;
 	}

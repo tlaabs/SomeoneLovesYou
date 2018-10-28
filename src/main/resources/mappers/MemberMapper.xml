@@ -3,20 +3,20 @@
 
 <mapper namespace="com.slu.mappers.MemberMapper">
 
-	<update id="updateMember">
+	<update id="update">
 		update tbl_member
 		set userpwd = #{usernpwd}
 		where userid = #{userid}
 	</update>
 
-	<insert id="insertMember">
+	<insert id="insert">
 		insert into tbl_member
 		(userid,userpwd,email,state,username) values
 		(#{userid}, #{userpwd},
 		#{email}, #{state}, #{username})
 	</insert>
 
-	<select id="readMember" resultType="com.slu.domain.MemberVO">
+	<select id="read" resultType="com.slu.domain.MemberVO">
 		select
 		userid,userpwd,email,state,username
 		from
@@ -35,7 +35,7 @@
 		userid = #{userid} and userpwd = #{userpwd}
 	</select>
 	
-	<update id="updateMemberWithNoPWD">
+	<update id="updateWithNoPWD">
 	update tbl_member
 	set state = #{state},
 	emotion = #{emotion}

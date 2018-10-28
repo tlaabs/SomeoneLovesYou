@@ -4,13 +4,13 @@ import com.slu.domain.MemberVO;
 import com.slu.dto.SignupDTO;
 
 public interface MemberDAO {
-	public void insertMember(SignupDTO dto);
+	public void insert(SignupDTO dto);
 	
-	public MemberVO readMember(String userid);
+	public MemberVO read(String userid);
 	
 	public MemberVO readWithPWD(String userid, String userpwd)throws Exception;
 	
-	public void updateMember(String userid, String usernpwd) throws Exception;
+	public void update(String userid, String usernpwd) throws Exception;
 	
-	public void updateMemberWithNoPWD(MemberVO dto);
+	public void updateWithNoPWD(MemberVO dto);
 }
